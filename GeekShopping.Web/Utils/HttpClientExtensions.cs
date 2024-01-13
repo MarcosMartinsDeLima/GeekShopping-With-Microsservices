@@ -17,7 +17,8 @@ namespace GeekShopping.Web.Utils
                 $"Algo Deu errado : {response.ReasonPhrase}");
             // deserializando a resposta json 
             var dataAsString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return JsonSerializer.Deserialize<T>(dataAsString);
+            return JsonSerializer.Deserialize<T>(dataAsString, new JsonSerializerOptions
+                {PropertyNameCaseInsensitive = true});
         }
 
         public static Task<HttpResponseMessage> PostAsJson <T> (this HttpClient httpClient,string ulr, T data){

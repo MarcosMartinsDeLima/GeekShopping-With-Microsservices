@@ -6,6 +6,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+//dependency injection
+builder.Services.AddHttpClient<IProductService,ProductService>(c => c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductApi"]));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -16,8 +19,6 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-//dependency injection
-builder.Services.AddHttpClient<IProductService,ProductService>(c => c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductApi"]));
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
