@@ -1,4 +1,5 @@
 using GeekShopping.IdentityServer.Configuration;
+using GeekShopping.IdentityServer.Initializer;
 using GeekShopping.IdentityServer.Model;
 using GeekShopping.IdentityServer.Model.Context;
 using Microsoft.AspNetCore.Identity;
@@ -17,6 +18,7 @@ builder.Services.AddDbContext<MysqlContext>(options => options.UseMySql(connecti
 builder.Services.AddIdentity<ApplicationUser,IdentityRole>()
     .AddEntityFrameworkStores<MysqlContext>()
     .AddDefaultTokenProviders();
+
 var builderServices = builder.Services.AddIdentityServer(options => {
     options.Events.RaiseErrorEvents = true;
     options.Events.RaiseInformationEvents = true;
@@ -28,11 +30,18 @@ var builderServices = builder.Services.AddIdentityServer(options => {
     .AddInMemoryApiScopes(IdentityConfiguration.ApiScopes)
     .AddInMemoryClients(IdentityConfiguration.Clients)
     .AddAspNetIdentity<ApplicationUser>();
-
-
+//injetando dependencias do dbinitializer class 
+builder.Services.AddScoped<IDbInitializer,DbInitializer>();
 
 builderServices.AddDeveloperSigningCredential();
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+
+
 var app = builder.Build();
+
+var Initializer = app.Services.CreateScope().ServiceProvider.GetService<IDbInitializer>();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -42,7 +51,6 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -50,6 +58,8 @@ app.UseRouting();
 app.UseIdentityServer();
 
 app.UseAuthorization();
+
+Initializer.Initialize();
 
 app.MapControllerRoute(
     name: "default",
