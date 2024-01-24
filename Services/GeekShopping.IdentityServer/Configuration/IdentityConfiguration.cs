@@ -23,7 +23,7 @@ namespace GeekShopping.IdentityServer.Configuration
         //Api scope
         public static IEnumerable<ApiScope> ApiScopes =>
             new List<ApiScope>{
-                new ApiScope("GeekShopping","GeekShopping Server"),
+                new ApiScope("geek_shopping","GeekShopping Server"),
                 new ApiScope(name:"read","Read data."),
                 new ApiScope(name:"write","Write data."),
                 new ApiScope(name:"delete","Delete data."),

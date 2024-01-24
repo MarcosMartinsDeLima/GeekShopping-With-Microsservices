@@ -18,6 +18,7 @@ builder.Services.AddDbContext<MysqlContext>(options => options.UseMySql(connecti
 builder.Services.AddIdentity<ApplicationUser,IdentityRole>()
     .AddEntityFrameworkStores<MysqlContext>()
     .AddDefaultTokenProviders();
+
 var builderServices = builder.Services.AddIdentityServer(options => {
     options.Events.RaiseErrorEvents = true;
     options.Events.RaiseInformationEvents = true;
@@ -33,6 +34,11 @@ var builderServices = builder.Services.AddIdentityServer(options => {
 builder.Services.AddScoped<IDbInitializer,DbInitializer>();
 
 builderServices.AddDeveloperSigningCredential();
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+
+
 var app = builder.Build();
 
 var Initializer = app.Services.CreateScope().ServiceProvider.GetService<IDbInitializer>();
@@ -45,7 +51,6 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();

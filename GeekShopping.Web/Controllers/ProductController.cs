@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using GeekShopping.Web.Models;
 using GeekShopping.Web.Services.Iservices;
+using GeekShopping.Web.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace GeekShopping.Web.Controllers
 {
@@ -20,6 +16,7 @@ namespace GeekShopping.Web.Controllers
             _productService = productService;
         }
 
+        [Authorize]
         public async Task<IActionResult> ProductIndex()
         {   
             var products = await _productService.FindAll();
@@ -32,6 +29,7 @@ namespace GeekShopping.Web.Controllers
             return View();
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> ProductCreatePost(ProductModel model)
         {   
@@ -58,6 +56,7 @@ namespace GeekShopping.Web.Controllers
             else return NotFound();
         }
 
+        [Authorize]
         [HttpPost("/update")]
         public async Task<IActionResult> ProductUpdatePost(ProductModel model)
         {   
@@ -68,7 +67,8 @@ namespace GeekShopping.Web.Controllers
             
             return View();
         }
-
+        
+        [Authorize]
         [HttpGet("/delete")]
         public async Task<IActionResult> ProductDelete(long id)
         {   
@@ -85,6 +85,7 @@ namespace GeekShopping.Web.Controllers
         }
 
         [HttpPost("/delete")]
+        [Authorize(Roles =Roles.Admin)]
         public async Task<IActionResult> ProductDelete(ProductModel model)
         {   
            
