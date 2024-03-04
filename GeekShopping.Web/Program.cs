@@ -13,7 +13,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(options => {
     options.DefaultScheme = "Cookies";
     options.DefaultChallengeScheme = "oidc";
-})  .AddCookie("Cookies",c => c.ExpireTimeSpan = TimeSpan.FromMinutes(10))
+})  .AddCookie("Cookies",c => {
+    c.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+    })
     .AddOpenIdConnect("oidc",options => {
         options.Authority = builder.Configuration["ServiceUrls:IdentityServer"];
         options.GetClaimsFromUserInfoEndpoint = true;
@@ -26,6 +28,8 @@ builder.Services.AddAuthentication(options => {
         options.TokenValidationParameters.RoleClaimType = "role";
         options.Scope.Add("geek_shopping");
         options.SaveTokens = true;
+        options.RequireHttpsMetadata = false;
+
     });
 
 
@@ -39,13 +43,16 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-
+app.UseHttpsRedirection();  
 
 app.UseStaticFiles();
+
 
 app.UseRouting();
 
 app.UseAuthentication();
+
+app.UseCookiePolicy();
 
 app.UseAuthorization();
 

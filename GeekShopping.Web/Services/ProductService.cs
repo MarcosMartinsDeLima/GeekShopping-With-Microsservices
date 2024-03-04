@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using GeekShopping.Web.Models;
 using GeekShopping.Web.Services.Iservices;
@@ -17,20 +18,23 @@ namespace GeekShopping.Web.Services
             _client = client ?? throw new ArgumentNullException();
         }
 
-        public async Task<IEnumerable<ProductModel>> FindAll()
+        public async Task<IEnumerable<ProductModel>> FindAll(string token)
         {
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",token);
             var response = await _client.GetAsync(basePath);
             return await response.ReadContentAs< List <ProductModel>> ();
         }
 
-        public async Task<ProductModel> FindById(long Id)
+        public async Task<ProductModel> FindById(long Id,string token)
         {
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",token);
             var response = await _client.GetAsync($"{basePath}/{Id}");
             return await response.ReadContentAs<ProductModel> ();
         }
 
-        public async Task<ProductModel> Create(ProductModel product)
+        public async Task<ProductModel> Create(ProductModel product,string token)
         {
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",token);
             var response = await _client.PostAsJson(basePath,product);
             if(response.IsSuccessStatusCode)
                 return await response.ReadContentAs<ProductModel> ();
@@ -38,8 +42,9 @@ namespace GeekShopping.Web.Services
                 throw new Exception($"Something went wrong : {response.ReasonPhrase}");
         }
 
-        public async Task<bool> Delete(long Id)
+        public async Task<bool> Delete(long Id,string token)
         {
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",token);
             var response = await _client.DeleteAsync($"{basePath}/{Id}");
             if(response.IsSuccessStatusCode)
                 return await response.ReadContentAs<bool> ();
@@ -47,9 +52,9 @@ namespace GeekShopping.Web.Services
                 throw new Exception($"Something went wrong : {response.ReasonPhrase}");
         }
 
-        public async Task<ProductModel> Update(ProductModel product)
+        public async Task<ProductModel> Update(ProductModel product,string token)
         {
-            
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",token);
             var response = await _client.PutAsJson(basePath,product);
             if(response.IsSuccessStatusCode)
                 return await response.ReadContentAs<ProductModel> ();

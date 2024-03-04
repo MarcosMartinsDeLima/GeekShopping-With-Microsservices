@@ -31,6 +31,7 @@ builder.Services.AddAuthentication("Bearer")
         options.TokenValidationParameters = new TokenValidationParameters{
             ValidateAudience = false
         };
+        options.RequireHttpsMetadata = false;
     });
 
 builder.Services.AddAuthorization(options => {

@@ -23,10 +23,10 @@ namespace GeekShopping.IdentityServer.Configuration
         //Api scope
         public static IEnumerable<ApiScope> ApiScopes =>
             new List<ApiScope>{
-                new ApiScope("geek_shopping","GeekShopping Server"),
-                new ApiScope(name:"read","Read data."),
-                new ApiScope(name:"write","Write data."),
-                new ApiScope(name:"delete","Delete data."),
+                new ApiScope(name:"geek_shopping",displayName:"GeekShopping Server"),
+                new ApiScope(name:"read",displayName:"Read data."),
+                new ApiScope(name:"write",displayName:"Write data."),
+                new ApiScope(name:"delete",displayName:"Delete data."),
             };
         //Clients
         public static IEnumerable<Client> Clients =>
@@ -49,7 +49,7 @@ namespace GeekShopping.IdentityServer.Configuration
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Email,
                         IdentityServerConstants.StandardScopes.Profile,
-                        "geek-shopping"
+                        "geek_shopping"
                         
                     }
                 }
