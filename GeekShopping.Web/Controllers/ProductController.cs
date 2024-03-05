@@ -10,14 +10,13 @@ namespace GeekShopping.Web.Controllers
     [Route("[controller]")]
     public class ProductController : Controller
     {
-            private readonly IProductService _productService;
+        private readonly IProductService _productService;
 
         public ProductController( IProductService productService)
         {
             _productService = productService;
         }
-
-        [Authorize]
+        
         public async Task<IActionResult> ProductIndex()
         {   
             var acessToken = await HttpContext.GetTokenAsync("access_token");
