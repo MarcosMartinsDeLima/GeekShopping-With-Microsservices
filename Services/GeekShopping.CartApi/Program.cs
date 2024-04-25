@@ -13,9 +13,9 @@ var connection = builder.Configuration["MysqlConnection:MysqlConnectionString"];
 builder.Services.AddDbContext<MysqlContext>(options => options.UseMySql(connection, new MySqlServerVersion(new Version(8,0,5))) );
 
 //mapper
-builder.Services.AddAutoMapper(typeof(Program));
-//IMapper mapper = MapConfig.RegisterMapping().CreateMapper();
-//builder.Services.AddSingleton(mapper);
+IMapper mapper = MapConfig.RegisterMapping().CreateMapper();
+builder.Services.AddSingleton(mapper);
+
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 //injetando os repositories

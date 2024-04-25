@@ -1,3 +1,4 @@
+using System.Text.Json;
 using GeekShopping.CartApi.Data.ValueObjects;
 using GeekShopping.CartApi.Model;
 using GeekShopping.CartApi.Repository;
@@ -24,16 +25,15 @@ namespace GeekShopping.CartApi.Controllers
             return Ok(cart);
         }
 
-        [HttpPost("add-cart/{id}")]
-        public async Task<ActionResult<CartVo>> AddCart(CartVo cartVo)
+        [HttpPost("add-cart")]
+        public async Task<ActionResult<CartVo>> AddCart([FromBody]CartVo cartVo)
         {
-
             var cart = await _repository.SaveOrUpdateCart(cartVo);
             if(cart == null) return NotFound();
             return Ok(cart);
         }
 
-        [HttpPut("update-cart/{id}")]
+        [HttpPut("update-cart")]
         public async Task<ActionResult<CartVo>> UpdateCart(CartVo cartVo)
         {
 
@@ -48,6 +48,7 @@ namespace GeekShopping.CartApi.Controllers
         {
 
             var status = await _repository.RemoveFromCart(id);
+            //trocar null por false 
             if(status == null) return BadRequest();
             return Ok(status);
         }
