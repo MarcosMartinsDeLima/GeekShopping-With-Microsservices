@@ -79,6 +79,7 @@ namespace GeekShopping.CartApi.Repository
         public async Task<CartVo> SaveOrUpdateCart(CartVo vo)
         {
             Cart cart = _mapper.Map<Cart>(vo); 
+        
             //checa se o produto já esta salvo no banco de dados se não estiver então salva
             var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == vo.CartDetails.FirstOrDefault().ProductId);
 
@@ -95,6 +96,7 @@ namespace GeekShopping.CartApi.Repository
             {
                 _context.CartHeaders.Add(cart.CartHeader);
                 await _context.SaveChangesAsync();
+                
                 cart.CartDetails.FirstOrDefault().CartHeaderId = cart.CartHeader.Id;
                 cart.CartDetails.FirstOrDefault().Product = null;
                 _context.CartDetails.Add(cart.CartDetails.FirstOrDefault());
@@ -103,12 +105,12 @@ namespace GeekShopping.CartApi.Repository
             {
                 //checa se o cartDetails tem o mesmo produto
                 var cartdetail = await _context.CartDetails.AsNoTracking().FirstOrDefaultAsync(
-                    p =>p.ProductId == vo.CartDetails.FirstOrDefault().ProductId && p.CartHeaderId == cartHeadear.Id );
+                    p =>p.ProductId == cart.CartDetails.FirstOrDefault().ProductId && p.CartHeaderId == cartHeadear.Id );
                 
                 if(cartdetail == null)
                 {
                     //cria cartdetail
-                    cart.CartDetails.FirstOrDefault().CartHeaderId = cart.CartHeader.Id;
+                    cart.CartDetails.FirstOrDefault().CartHeaderId = cartHeadear.Id;
                     cart.CartDetails.FirstOrDefault().Product = null;
                     _context.CartDetails.Add(cart.CartDetails.FirstOrDefault());
                     await _context.SaveChangesAsync();
