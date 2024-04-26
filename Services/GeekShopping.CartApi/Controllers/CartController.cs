@@ -49,7 +49,7 @@ namespace GeekShopping.CartApi.Controllers
 
             var status = await _repository.RemoveFromCart(id);
             //trocar null por false 
-            if(status == null) return BadRequest();
+            if(status == false) return BadRequest();
             return Ok(status);
         }
 
