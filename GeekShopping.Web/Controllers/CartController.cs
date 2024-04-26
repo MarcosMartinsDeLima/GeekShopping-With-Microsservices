@@ -48,7 +48,7 @@ namespace GeekShopping.Web.Controllers
                 {
                     foreach(var item in response.CartDetails)
                     {
-                        response.CartHeader.PurchaseAmout+= (item.Product.Price * item.Product.Count);
+                        response.CartHeader.PurchaseAmout+= item.Product.Price * item.Count;
                     }
                 }
 
