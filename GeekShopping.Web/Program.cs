@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 //dependency injection
 builder.Services.AddHttpClient<IProductService,ProductService>(c => c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductApi"]));
 builder.Services.AddHttpClient<ICartService,CartService>(c => c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CartApi"]));
+builder.Services.AddHttpClient<ICouponService,CouponService>(c => c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CouponApi"]));
 
 
 // Add services to the container.

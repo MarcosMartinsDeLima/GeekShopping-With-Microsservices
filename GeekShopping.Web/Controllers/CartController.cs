@@ -11,11 +11,13 @@ namespace GeekShopping.Web.Controllers
     {
         private readonly IProductService _productService;
         private readonly ICartService _cartService;
+        private readonly ICouponService _couponService;
 
-        public CartController(IProductService productService,ICartService cartService)
+        public CartController(IProductService productService,ICartService cartService, ICouponService couponService)
         {
             _productService = productService;
             _cartService = cartService;
+            _couponService = couponService;
         }
 
             [HttpGet("Index")] 
@@ -25,9 +27,40 @@ namespace GeekShopping.Web.Controllers
                 return View(await FindUserCart());
             }
 
+            [HttpPost("ApplyCoupon")]
+            [ActionName("ApplyCoupon")] 
+            [Authorize]
+            public async Task<IActionResult> ApplyCoupon(CartViewModel cartViewModel)
+            {
+                var acessToken = await HttpContext.GetTokenAsync("access_token");
+
+                var response = await _cartService.ApplyCoupon(cartViewModel, acessToken);
+                if (response)
+                {
+                    return RedirectToAction(nameof(CartIndex));
+                }
+
+                return View();
+            }
+
+            [HttpPost("RemoveCoupon")]
+            [ActionName("RemoveCoupon")] 
+            [Authorize]
+            public async Task<IActionResult> RemoveCoupon()
+            {
+                var acessToken = await HttpContext.GetTokenAsync("access_token");
+                var userId = User.Claims.Where(u => u.Type == "sub")?.FirstOrDefault()?.Value;
+                var response = await _cartService.RemoveCoupon(userId, acessToken);
+                if (response)
+                {
+                    return RedirectToAction(nameof(CartIndex));
+                }
+
+                return View();
+            }
+
             public async Task<IActionResult> Remove(int id)
             {
-                Console.WriteLine(id);
                 var acessToken = await HttpContext.GetTokenAsync("access_token");
                 var response = await _cartService.RemoveFromCart(id, acessToken);
                 if (response)
@@ -46,13 +79,30 @@ namespace GeekShopping.Web.Controllers
                 var response = await _cartService.FindCartByUserId(UserId, acessToken); 
                 if(response?.CartHeader != null)
                 {
+                    if(!string.IsNullOrEmpty(response.CartHeader.CouponCode))
+                    {
+                        var coupon = await _couponService.GetCoupon(response.CartHeader.CouponCode,acessToken);
+                        if(coupon?.CouponCode != null)
+                        {
+                            response.CartHeader.DiscountTotal = coupon.DiscountAmout;
+                        }
+                    }
+
                     foreach(var item in response.CartDetails)
                     {
                         response.CartHeader.PurchaseAmout+= item.Product.Price * item.Count;
                     }
+
+                    response.CartHeader.PurchaseAmout -= response.CartHeader.DiscountTotal;
                 }
 
                 return response;
+            }
+            
+            [HttpGet]
+             public async Task<IActionResult> Checkout()
+            {
+                return View(await FindUserCart());
             }
         }
 }
