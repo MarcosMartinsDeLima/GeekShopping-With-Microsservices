@@ -1,5 +1,6 @@
 using System.Text.Json;
 using GeekShopping.CartApi.Data.ValueObjects;
+using GeekShopping.CartApi.Message;
 using GeekShopping.CartApi.Model;
 using GeekShopping.CartApi.Repository;
 using Microsoft.AspNetCore.Mvc;
@@ -67,6 +68,18 @@ namespace GeekShopping.CartApi.Controllers
             var status = await _repository.RemoveCoupon(Userid);
             if(status == false) return NotFound();
             return Ok(status);
+        }
+        
+        [HttpPost("checkout")]
+        public async Task<ActionResult<CheckoutHeaderVO>> Checkout(CheckoutHeaderVO vo)
+        {
+            var cart = await _repository.FindCartByUserId(vo.UserId);
+            if(cart == null) return NotFound();
+            vo.CartDetails = cart.CartDetails;
+            vo.DateTime = DateTime.Now;
+            //rabbitmq
+
+            return Ok(vo);
         }
 
     }
