@@ -99,13 +99,16 @@ namespace GeekShopping.Web.Controllers
                 return response;
             }
             
-            [HttpGet]
-             public async Task<IActionResult> Checkout()
+            [HttpGet("checkout")]
+            [ActionName("Checkout")]
+            [Authorize]
+            
+            public async Task<IActionResult> Checkout()
             {
                 return View(await FindUserCart());
             }
 
-            [HttpPost]
+            [HttpPost("checkout")]
             public async Task<IActionResult> Checkout(CartViewModel model)            
             {
                 var acessToken = await HttpContext.GetTokenAsync("access_token");
@@ -119,7 +122,8 @@ namespace GeekShopping.Web.Controllers
                 return View(model);   
             }
 
-            [HttpGet]
+            [HttpGet("confirmation")]
+            [ActionName("Confirmation")]
             public async Task<IActionResult> Confirmation()            
             {
                 return View();   
