@@ -1,4 +1,5 @@
 using AutoMapper;
+using GeekShopping.CartApi.RabbitMQSender;
 using GeekShopping.CartApi.Repository;
 using GeekShopping.Services.CartApi.Config;
 using GeekShopping.Services.CartApi.Model.Context;
@@ -20,6 +21,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 //injetando os repositories
 builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddSingleton<IRabbitMQMessageSender, RabbitMQSender>();
 
 builder.Services.AddControllers();
 

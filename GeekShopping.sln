@@ -1,4 +1,4 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
@@ -22,6 +22,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeekShopping.CartApi", "Services\GeekShopping.CartApi\GeekShopping.CartApi.csproj", "{66BD7767-1CD1-45BA-9D13-01BF970ABC8B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeekShopping.CouponApi", "Services\GeekShopping.CouponApi\GeekShopping.CouponApi.csproj", "{AE030B50-959A-4244-A5B4-112CBA151346}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeekShopping.MessageBus", "GeekShopping.MessageBus\GeekShopping.MessageBus.csproj", "{2943AEC4-50B3-4734-B0A6-48167CE1086A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,6 +58,10 @@ Global
 		{AE030B50-959A-4244-A5B4-112CBA151346}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE030B50-959A-4244-A5B4-112CBA151346}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE030B50-959A-4244-A5B4-112CBA151346}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2943AEC4-50B3-4734-B0A6-48167CE1086A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2943AEC4-50B3-4734-B0A6-48167CE1086A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2943AEC4-50B3-4734-B0A6-48167CE1086A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2943AEC4-50B3-4734-B0A6-48167CE1086A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{AE030B50-959A-4244-A5B4-112CBA151346} = {E3A9E173-D48D-4DF5-A985-A5EF5EEAEEE8}
