@@ -109,6 +109,7 @@ namespace GeekShopping.Web.Controllers
             }
 
             [HttpPost("checkout")]
+            [ActionName("Checkout")]
             public async Task<IActionResult> Checkout(CartViewModel model)            
             {
                 var acessToken = await HttpContext.GetTokenAsync("access_token");
@@ -116,10 +117,10 @@ namespace GeekShopping.Web.Controllers
                 
                 if(response != null)
                 {
-                    RedirectToAction(nameof(Confirmation));
+                    return RedirectToAction(nameof(Confirmation));
                 }
 
-                return View(model);   
+                return View(await FindUserCart());   
             }
 
             [HttpGet("confirmation")]

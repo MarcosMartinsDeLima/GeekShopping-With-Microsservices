@@ -74,7 +74,7 @@ namespace GeekShopping.CartApi.Controllers
         }
         
         [HttpPost("checkout")]
-        public async Task<ActionResult<CheckoutHeaderVO>> Checkout(CheckoutHeaderVO vo)
+        public async Task<ActionResult<CheckoutHeaderVO>> Checkout([FromBody]CheckoutHeaderVO vo)
         {
             //verifica se o não esta nulo mas o user id esta nulo
             if(vo?.UserId == null) return BadRequest();
