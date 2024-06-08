@@ -38,7 +38,7 @@ namespace GeekShopping.CartApi.RabbitMQSender
 
             using var channel = _connection.CreateModel();
             //declarar a fila
-            channel.QueueDeclare(queue:queueName,false,false,arguments:null);
+            channel.QueueDeclare(queue:queueName,false,false,false,arguments:null);
 
             //converter basemessage em um array de bytes
             byte[] body = GetMessageAsByteArray(baseMessage);
