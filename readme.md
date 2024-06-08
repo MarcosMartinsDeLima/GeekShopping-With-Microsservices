@@ -9,17 +9,25 @@ Razor pages para o front end, arquitetura de microsserviços, autenticação, oa
 
 
 ## Esquema 
-![imagem](GeekShopping.Web/img/tela.png)
+![imagem](GeekShopping.Web/img/esquema.png)
 
 ## Microsserviços
 GeekShooping.ApiGateway ` é a api gateway `
+
 GeekShooping.Web  ` é o frontend da aplicação `
+
 GeekShooping.CartApi ` é o serviço responsavel pelo carrinho de compras `
+
 GeekShooping.CouponApi `é o serviço de coupon de disconto `
+
 GeekShooping.Email ` responsavel por logs `
+
 GeekShooping.IdentityServer ` é o servidor de identificação `
+
 GeekShooping.OrderApi ` é responsavel por gerenciar os pedidos e adicionar filas ao rabbitmq `
+
 GeekShooping.PaymentApi ` é apenas um mock que simula um pagamento ficiticio `
+
 GeekShooping.ProductApi ` é a api de produtos `
 
 ## Endpoints 
