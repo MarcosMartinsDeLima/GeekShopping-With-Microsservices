@@ -2,9 +2,7 @@ using AutoMapper;
 using GeekShopping.CartApi.Data.ValueObjects;
 using GeekShopping.CartApi.Model;
 using GeekShopping.Services.CartApi.Model.Context;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Update.Internal;
 
 namespace GeekShopping.CartApi.Repository
 {
@@ -50,7 +48,7 @@ namespace GeekShopping.CartApi.Repository
         {
             Cart cart = new ()
             {
-                CartHeader = await _context.CartHeaders.FirstOrDefaultAsync(c => c.UserId == userId)
+                CartHeader = await _context.CartHeaders.FirstOrDefaultAsync(c => c.UserId == userId) ?? new CartHeader(),
             };
 
             cart.CartDetails = _context.CartDetails.Where(c => c.CartHeaderId == cart.CartHeader.Id).Include(c => c.Product);

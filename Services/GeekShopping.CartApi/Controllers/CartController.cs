@@ -4,6 +4,7 @@ using GeekShopping.CartApi.Message;
 using GeekShopping.CartApi.Model;
 using GeekShopping.CartApi.RabbitMQSender;
 using GeekShopping.CartApi.Repository;
+using GeekShopping.CouponApi.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GeekShopping.CartApi.Controllers
@@ -12,12 +13,14 @@ namespace GeekShopping.CartApi.Controllers
     public class CartController : ControllerBase
     {
         private ICartRepository _repository;
+        private ICouponRepository _coupon_repository;
         private IRabbitMQMessageSender _rabbitMQMessageSender;
 
-        public CartController(ICartRepository cartRepository,IRabbitMQMessageSender rabbitMQMessageSender)
+        public CartController(ICartRepository cartRepository,ICouponRepository couponRepository,IRabbitMQMessageSender rabbitMQMessageSender)
         {
             _repository = cartRepository;
             _rabbitMQMessageSender = rabbitMQMessageSender;
+            _coupon_repository = couponRepository;
         }
 
         [HttpGet("find-cart/{id}")]
@@ -76,15 +79,25 @@ namespace GeekShopping.CartApi.Controllers
         [HttpPost("checkout")]
         public async Task<ActionResult<CheckoutHeaderVO>> Checkout([FromBody]CheckoutHeaderVO vo)
         {
+            string token = Request.Headers["Authorization"];
             //verifica se o não esta nulo mas o user id esta nulo
             if(vo?.UserId == null) return BadRequest();
             var cart = await _repository.FindCartByUserId(vo.UserId);
             if(cart == null) return NotFound();
+            if(!string.IsNullOrEmpty(vo.CouponCode))
+            {
+                CouponVo coupon = await _coupon_repository.GetCouponByCouponCode(vo.CouponCode,token);
+                if(vo.DiscountTotal != coupon.DiscountAmout)
+                {
+                    return StatusCode(412);
+                }
+            }
             vo.CartDetails = cart.CartDetails;
             vo.DateTime = DateTime.Now;
 
             //rabbitmq
             _rabbitMQMessageSender.SendMessage(vo,"checkoutqueue");
+            await _repository.ClearCart(vo.UserId);
             return Ok(vo);
         }
 

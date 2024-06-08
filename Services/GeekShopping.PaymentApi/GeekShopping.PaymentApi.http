@@ -1,0 +1,6 @@
+@GeekShopping.PaymentApi_HostAddress = http://localhost:5298
+
+GET {{GeekShopping.PaymentApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
