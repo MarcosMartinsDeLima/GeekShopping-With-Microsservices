@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using GeekShopping.CartApi.Message;
 using GeekShopping.MessageBus;
+using GeekShopping.PaymentApi.Messages;
 using RabbitMQ.Client;
 
-namespace GeekShopping.CartApi.RabbitMQSender
+namespace GeekShopping.PaymentApi.RabbitMQSender
 {
     public class RabbitMQSender : IRabbitMQMessageSender
     {
@@ -16,6 +12,9 @@ namespace GeekShopping.CartApi.RabbitMQSender
         private readonly string _password;
         private readonly string _userName;
         private IConnection _connection;
+        private const string exchangeName= "DirectPaymentUpdateExchange";
+        private const string PaymentEmailUpdateQueueName= "PaymentEmailUpdateQueueName";
+        private const string PaymentOrderUpdateQueueName= "PaymentOrderUpdateQueueName";
 
         public RabbitMQSender()
         {
@@ -24,20 +23,25 @@ namespace GeekShopping.CartApi.RabbitMQSender
             _userName = "guest";
         }    
 
-        public void SendMessage(BaseMessage baseMessage, string queueName)
+        public void SendMessage(BaseMessage baseMessage)
         {
             //criar a conexão com rabbitMQ
             if(ConnectionExists())
             {
             using var channel = _connection.CreateModel();
-            //declarar a fila
-            channel.QueueDeclare(queue:queueName,false,false,false,arguments:null);
+            //declarar a exchange, durable false faz com que ela se apague após consumir
+            channel.ExchangeDeclare(exchangeName,ExchangeType.Direct,durable:false);
+            channel.QueueDeclare(PaymentEmailUpdateQueueName,false,false,false,null);
+            channel.QueueDeclare(PaymentOrderUpdateQueueName,false,false,false,null);
 
+            channel.QueueBind(PaymentEmailUpdateQueueName,exchangeName,"PaymentEmail");
+            channel.QueueBind(PaymentOrderUpdateQueueName,exchangeName,"PaymentOrder");
             //converter basemessage em um array de bytes
             byte[] body = GetMessageAsByteArray(baseMessage);
 
             //publicando a messagem
-            channel.BasicPublish(exchange:"",routingKey:queueName,basicProperties:null,body:body);
+            channel.BasicPublish(exchange:exchangeName,"PaymentEmail",basicProperties:null,body:body);
+            channel.BasicPublish(exchange:exchangeName,"PaymentOrder",basicProperties:null,body:body);
         }
         }
 
@@ -47,7 +51,7 @@ namespace GeekShopping.CartApi.RabbitMQSender
             var options = new JsonSerializerOptions{
                 WriteIndented = true,
             };
-            var json = JsonSerializer.Serialize<CheckoutHeaderVO>((CheckoutHeaderVO)baseMessage,options);
+            var json = JsonSerializer.Serialize<UpdatePaymentResultMessage>((UpdatePaymentResultMessage)baseMessage,options);
 
             var body = Encoding.UTF8.GetBytes(json);
             return body;
